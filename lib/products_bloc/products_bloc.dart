@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
+import '../app_exception.dart';
 import '../models/product.dart';
 
 part 'products_event.dart';
@@ -11,10 +12,21 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   ProductsBloc() : super(const ProductsState()) {
     on<GetAllProducts>((event, emit) async {
       final filter = event.filter;
+      emit(const ProductsState(status: ProductsStatus.loading));
+
       try {
         final products = await _getProducts();
-        emit(ProductsState(products: products));
-      } catch (error) {}
+        emit(ProductsState(
+          products: products,
+          status: ProductsStatus.success,
+        ));
+      } catch (error) {
+        final appException = AppException.from(error);
+        emit(ProductsState(
+          status: ProductsStatus.error,
+          exception: appException,
+        ));
+      }
     });
   }
 
