@@ -9,9 +9,12 @@ part 'products_state.dart';
 
 class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   ProductsBloc() : super(const ProductsState()) {
-    on<GetAllProducts>((event, emit) {
+    on<GetAllProducts>((event, emit) async {
       final filter = event.filter;
-
+      try {
+        final products = await _getProducts();
+        emit(ProductsState(products: products));
+      } catch (error) {}
     });
   }
 
@@ -22,14 +25,3 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     return jsonList.map((jsonElement) => Product.fromJson(jsonElement)).toList();
   }
 }
-
-
-
-
-
-
-
-
-
-
-
