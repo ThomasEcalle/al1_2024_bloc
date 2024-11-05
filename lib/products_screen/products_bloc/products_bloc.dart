@@ -2,8 +2,9 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
-import '../app_exception.dart';
-import '../models/product.dart';
+import '../../app_exception.dart';
+import '../../shared/models/product.dart';
+
 
 part 'products_event.dart';
 part 'products_state.dart';
