@@ -20,39 +20,42 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => ProductsBloc(
-            productsRepository: ProductsRepository(
-              remoteDataSource: FakeDataSource(),
-              localProductsDataSource: FakeLocalProductsDataSource(),
+    return RepositoryProvider(
+      create: (context) => ProductsRepository(
+        remoteDataSource: FakeDataSource(),
+        localProductsDataSource: FakeLocalProductsDataSource(),
+      ),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => ProductsBloc(
+              productsRepository: context.read<ProductsRepository>(),
             ),
           ),
-        ),
-        BlocProvider(
-          create: (context) => CartBloc(),
-        ),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        routes: {
-          '/': (context) => const ProductsScreen(),
-          '/cartScreen': (context) => const CartScreen(),
-        },
-        onGenerateRoute: (routeSettings) {
-          Widget screen = Container(color: Colors.pink);
-          final argument = routeSettings.arguments;
-          switch (routeSettings.name) {
-            case 'productDetail':
-              if (argument is Product) {
-                screen = ProductDetailScreen(product: argument);
-              }
-              break;
-          }
+          BlocProvider(
+            create: (context) => CartBloc(),
+          ),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          routes: {
+            '/': (context) => const ProductsScreen(),
+            '/cartScreen': (context) => const CartScreen(),
+          },
+          onGenerateRoute: (routeSettings) {
+            Widget screen = Container(color: Colors.pink);
+            final argument = routeSettings.arguments;
+            switch (routeSettings.name) {
+              case 'productDetail':
+                if (argument is Product) {
+                  screen = ProductDetailScreen(product: argument);
+                }
+                break;
+            }
 
-          return MaterialPageRoute(builder: (context) => screen);
-        },
+            return MaterialPageRoute(builder: (context) => screen);
+          },
+        ),
       ),
     );
   }
