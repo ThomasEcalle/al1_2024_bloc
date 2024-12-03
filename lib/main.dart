@@ -7,6 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'cart_screen/cart_screen.dart';
 import 'products_screen/product_detail_screen/product_detail_screen.dart';
 import 'shared/blocs/cart_bloc/cart_bloc.dart';
+import 'shared/services/local_products_data_source/fake_local_products_data_source.dart';
+import 'shared/services/products_data_source/fake_data_source.dart';
+import 'shared/services/products_repository/products_repository.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,7 +23,12 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => ProductsBloc(),
+          create: (context) => ProductsBloc(
+            productsRepository: ProductsRepository(
+              remoteDataSource: FakeDataSource(),
+              localProductsDataSource: FakeLocalProductsDataSource(),
+            ),
+          ),
         ),
         BlocProvider(
           create: (context) => CartBloc(),
